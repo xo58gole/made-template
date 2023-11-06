@@ -41,6 +41,9 @@ The data collection provides an overview of the language understanding of Leipzi
 <!-- List of work packages ordered sequentially, each pointing to an issue with more details. -->
 
 1. Data Collection and Preparation [#1][i1]
-2. Correlation and Insights
-3. Recommendations and Reporting
+2. Correlation and Insights [#2][i2]
+3. Recommendations and Reporting [#3][i3]
 
+[i1]: https://github.com/xo58gole/made-template/issues/1
+[i2]: https://github.com/xo58gole/made-template/issues/2
+[i3]: https://github.com/xo58gole/made-template/issues/3
