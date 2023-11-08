@@ -15,9 +15,6 @@ This project aims to investigate the relationship between language proficiency a
 
 The motivation behind this project stems from the importance of fostering inclusive and equitable employment opportunities for migrants, a segment of the population often facing unique challenges in the labor market. We want to contribute to evidence-based policy decisions and support programs that promote successful integration.
 
-To accomplish this, we will collect and analyze relevant data from open sources, focusing on migrants' language proficiency, employment status, and the industries they work in. We will explore factors such as the country of origin, age, and education levels of migrants, which may affect language acquisition and employment prospects. The project will employ statistical analysis and data visualization techniques to uncover patterns, correlations, and potential insights.
-
-By shedding light on the relationship between language proficiency and employment, our project seeks to provide actionable recommendations for policymakers, local communities, and organizations aiming to support the successful integration of migrants into the workforce in Leipzig and beyond.
 ## Datasources
 
 <!-- Describe each datasources you plan to use in a section. Use the prefic "DatasourceX" where X is the id of the datasource. -->
