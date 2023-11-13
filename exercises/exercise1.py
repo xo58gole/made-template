@@ -2,12 +2,13 @@ import pandas as pd
 import csv
 from sqlalchemy import create_engine, inspect
 from sqlite3 import connect
+import requests
 
-# Correct the delimiter and quotechar
-with open('csv.csv', newline='', encoding='utf-8') as csvfile:
-    spamreader = csv.reader(csvfile, delimiter=';', quotechar='"')
-    for row in spamreader:
-        print(', '.join(row))
+# Read CSV file from URL
+url = "https://opendata.rhein-kreis-neuss.de/api/v2/catalog/datasets/rhein-kreis-neuss-flughafen-weltweit/exports/csv"
+response = requests.get(url)
+decoded_content = response.content.decode('utf-8')
+csv_reader = csv.reader(decoded_content.splitlines(), delimiter=';')
 
 # Define SQLite database connection and create table
 conn = connect("airports.sqlite")
@@ -31,27 +32,25 @@ cursor.execute("""
 """)
 
 # Write data to SQLite table
-with open('csv.csv', newline='', encoding='utf-8') as csvfile:
-    spamreader = csv.reader(csvfile, delimiter=';', quotechar='"')
-    next(spamreader)  # skip header row
-    for row in spamreader:
-        cursor.execute("""
-            INSERT INTO airports (
-                column_1,
-                column_2,
-                column_3,
-                column_4,
-                column_5,
-                column_6,
-                column_7,
-                column_8,
-                column_9,
-                column_10,
-                column_11,
-                column_12,
-                geo_punkt
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, row)
+next(csv_reader)  # skip header row
+for row in csv_reader:
+    cursor.execute("""
+        INSERT INTO airports (
+            column_1,
+            column_2,
+            column_3,
+            column_4,
+            column_5,
+            column_6,
+            column_7,
+            column_8,
+            column_9,
+            column_10,
+            column_11,
+            column_12,
+            geo_punkt
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, row)
 
 # Commit changes and close connection
 conn.commit()
