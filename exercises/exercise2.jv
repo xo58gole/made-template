@@ -8,6 +8,7 @@ pipeline TrainStopPipeline {
   TrainTextFileInterpreter -> TrainCSVInterpreter;
 
   TrainCSVInterpreter 
+    -> TrainColumnDeleter
     -> TrainTableInterpreter
     -> TrainLoader;
 
@@ -21,29 +22,55 @@ pipeline TrainStopPipeline {
     enclosing: '"';
     delimiter: ";";
   }
- block TrainColumnDeleter oftype ColumnDeleter {
-   delete: [column J];
- }
+
+  block TrainColumnDeleter oftype ColumnDeleter {
+    delete: [column J];
+  }
+
   block TrainTableInterpreter oftype TableInterpreter {
-    // Adjust column names to match the actual header in your CSV file
     header: false;
     columns: [
       "EVA_NR" oftype integer,
       "DS100" oftype text,
-      "IFOPT" oftype text,
+      "IFOPT" oftype anychar,
       "NAME" oftype text,
-      "Verkehr" oftype text,
-      "Laenge" oftype decimal,
-      "Breite" oftype decimal,
+      "Verkehr" oftype UsStateCode ,
+      "Laenge" oftype VehicleIdentificationNumber10,
+      "Breite" oftype VehicleIdentificationNumber10,
       "Betreiber_Name" oftype text,
       "Betreiber_Nr" oftype integer
     ];
+    
   }
-
+valuetype UsStateCode oftype text {
+    constraints: [
+        UsStateCodeAllowlist,
+    ];
+}
+constraint UsStateCodeAllowlist on text:
+    value in [
+        "FV", "RV", "nur DPN",
+    ];
+valuetype VehicleIdentificationNumber10 oftype text {
+    // 10. Valuetypes can be further refined by providing constraints.
+    constraints: [
+        ExactlyTenCharacters,
+    ];
+}
+constraint ExactlyTenCharacters oftype LengthConstraint {
+   minLength: -90;
+   maxLength: 90;
+ }
+ valuetype anychar oftype text {
+    constraints: [
+        eggs,
+    ];
+}
+ constraint eggs on text:
+  value matches /..:[0-9]+:[0-9]+(:[0-9]+)?/;
 
   block TrainLoader oftype SQLiteLoader {
     table: "trainstops";
     file: "./trainstops.sqlite";
   }
 }
-
