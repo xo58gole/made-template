@@ -1,0 +1,49 @@
+pipeline TrainStopPipeline {
+
+  pipe {
+    from: TrainExtractor;
+    to: TrainTextFileInterpreter;
+  }
+
+  TrainTextFileInterpreter -> TrainCSVInterpreter;
+
+  TrainCSVInterpreter 
+    -> TrainTableInterpreter
+    -> TrainLoader;
+
+  block TrainExtractor oftype HttpExtractor {
+    url: "https://download-data.deutschebahn.com/static/datasets/haltestellen/D_Bahnhof_2020_alle.CSV";
+  }
+
+  block TrainTextFileInterpreter oftype TextFileInterpreter { }
+
+  block TrainCSVInterpreter oftype CSVInterpreter {
+    enclosing: '"';
+    delimiter: ";";
+  }
+ block TrainColumnDeleter oftype ColumnDeleter {
+   delete: [column J];
+ }
+  block TrainTableInterpreter oftype TableInterpreter {
+    // Adjust column names to match the actual header in your CSV file
+    header: false;
+    columns: [
+      "EVA_NR" oftype integer,
+      "DS100" oftype text,
+      "IFOPT" oftype text,
+      "NAME" oftype text,
+      "Verkehr" oftype text,
+      "Laenge" oftype decimal,
+      "Breite" oftype decimal,
+      "Betreiber_Name" oftype text,
+      "Betreiber_Nr" oftype integer
+    ];
+  }
+
+
+  block TrainLoader oftype SQLiteLoader {
+    table: "trainstops";
+    file: "./trainstops.sqlite";
+  }
+}
+
