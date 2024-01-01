@@ -1,3 +1,3 @@
 #!/bin/bash
-python3 C:/Users/49157/PycharmProjects/made-template/project/testProj4.py
+python3 ./main/project/testProj4.py
 
