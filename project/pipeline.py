@@ -1,7 +1,8 @@
+import chardet
 import requests
 import os
 import pandas as pd
-#import chardet
+import sqlite3
 
 # Define the URLs for the data sets
 data_urls = {
@@ -28,36 +29,40 @@ for data_name, data_url in data_urls.items():
 
 # Load the data from the CSV files into pandas dataframes with the correct encoding
 employment_data = pd.read_csv("data/employment_of_migrants.csv", encoding='UTF-16')
-language_data = pd.read_csv("data/language_understanding_of_migrants.csv", encoding='EUC-KR')
+language_data = pd.read_csv("data/language_understanding_of_migrants.csv", encoding='UTF-8')
 
-#with open("data/language_understanding_of_migrants.csv", 'rb') as file:
-    #result = chardet.detect(file.read())
+with open("data/employment_of_migrants.csv", 'rb') as file:
+    result = chardet.detect(file.read())
 
-#encoding = result['encoding']
-#print(f"Detected encoding: {encoding}")
+encoding = result['encoding']
+print(f"Detected encoding: {encoding}")
 
-# Print the columns of each DataFrame to check the actual column names
-print("Employment Data Columns:", employment_data.columns)
-print("Language Data Columns:", language_data.columns)
-
-# Transform Employment of Migrants data
+# Transform Employment of Migrants data without modifying the original DataFrame
 employment_data_transformed = employment_data.rename(columns={
-    'Region': 'region',
-    'männlich': 'männlich',
-    'weiblich': 'weiblich'
+    'Region': 'Region',
+    'männlich': 'Male',
+    'weiblich': 'Female'
 })
 
-# Store the transformed Employment of Migrants data in a new CSV file
-employment_data_transformed.to_csv("C:/Users/49157/PycharmProjects/made-template/data/transformed_employment_data.csv", index=False)
 
 # Transform Language Understanding of Migrants data
 language_data_transformed = language_data.rename(columns={
-    'Gebiet': 'Gebiet',
-    'deutsch verstehen männlich': 'deutsch_verstehen_maennlich',
-    'deutsch sprechen männlich': 'deutsch_sprechen_maennlich',
-    'deutsch verstehen weiblich': 'deutsch_verstehen_weiblich',
-    'deutsch sprechen weiblich': 'deutsch_sprechen_weiblich'
+    'Gebiet': 'Region',
+    'deutsch verstehen männlich': 'German_understanding_male',
+    'deutsch sprechen männlich': 'Native_speaker_male',
+    'deutsch verstehen weiblich': 'German_understanding_female',
+    'deutsch sprechen weiblich': 'Native_speaker_female'
 })
 
-# Store the transformed Language Understanding of Migrants data in a new CSV file
-language_data_transformed.to_csv("C:/Users/49157/PycharmProjects/made-template/data/transformed_language_data.csv", index=False)
+# Print the columns of each DataFrame to check the actual column names
+print("Employment Data Columns:", employment_data_transformed.columns)
+print("Language Data Columns:", language_data_transformed.columns)
+
+# Save the transformed data to SQLite databases
+conn = sqlite3.connect('data/employment_data_transformed.db')
+employment_data_transformed.to_sql('employment_data_transformed', conn, if_exists='replace', index=False)
+conn.close()
+
+conn = sqlite3.connect('data/language_data_transformed.db')
+language_data_transformed.to_sql('language_data_transformed', conn, if_exists='replace', index=False)
+conn.close()

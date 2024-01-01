@@ -1,2 +1,2 @@
 #!/bin/bash
-python3 /project/pipeline.py
+python3 C:/Users/49157/PycharmProjects/made-template/project/pipeline.py
