@@ -1,6 +1,6 @@
 import unittest
 import os
-import pandas as pd
+
 
 class TestDataPipeline(unittest.TestCase):
     def test_data_pipeline(self):
