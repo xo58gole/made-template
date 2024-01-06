@@ -17,7 +17,6 @@ jobs:
       # Install python and dependencies
       - name: Set up Python 3.11.7 and install dependencies
         run: |
-          python3.11.7 -m pip install --upgrade pip
           pip install requests chardet pandas # Install the required libraries
         
       # Run CI
