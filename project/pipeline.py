@@ -1,4 +1,4 @@
-import chardet
+#import chardet
 import requests
 import os
 import pandas as pd
@@ -31,11 +31,11 @@ for data_name, data_url in data_urls.items():
 employment_data = pd.read_csv("data/employment_of_migrants.csv", encoding='UTF-16')
 language_data = pd.read_csv("data/language_understanding_of_migrants.csv", encoding='UTF-8')
 
-with open("data/employment_of_migrants.csv", 'rb') as file:
-    result = chardet.detect(file.read())
+#with open("data/employment_of_migrants.csv", 'rb') as file:
+ #  result = chardet.detect(file.read())
 
-encoding = result['encoding']
-print(f"Detected encoding: {encoding}")
+#encoding = result['encoding']
+#print(f"Detected encoding: {encoding}")
 
 # Transform Employment of Migrants data without modifying the original DataFrame
 employment_data_transformed = employment_data.rename(columns={
