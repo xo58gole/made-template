@@ -5,7 +5,7 @@ import os
 class TestDataPipeline(unittest.TestCase):
     def test_data_pipeline(self):
         # Execute the data pipeline
-        os.system('pipeline.sh')
+        os.system('pipeline.py')
         print("Success: Data pipeline executed")
 
 class TestFilesAndColumns(unittest.TestCase):
