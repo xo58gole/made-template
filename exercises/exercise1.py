@@ -1,57 +1,13 @@
 import pandas as pd
-import csv
-from sqlalchemy import create_engine, inspect
-from sqlite3 import connect
-import requests
+from sqlalchemy import String, TEXT, INTEGER, Float, DECIMAL
 
-# Read CSV file from URL
-url = "https://opendata.rhein-kreis-neuss.de/api/v2/catalog/datasets/rhein-kreis-neuss-flughafen-weltweit/exports/csv"
-response = requests.get(url)
-decoded_content = response.content.decode('utf-8')
-csv_reader = csv.reader(decoded_content.splitlines(), delimiter=';')
+#loading from data souce
+datafield = pd.read_csv('https://opendata.rhein-kreis-neuss.de/api/v2/catalog/datasets/rhein-kreis-neuss-flughafen-weltweit/exports/csv',sep=";", on_bad_lines='skip')
 
-# Define SQLite database connection and create table
-conn = connect("airports.sqlite")
-cursor = conn.cursor()
-cursor.execute("""
-    CREATE TABLE IF NOT EXISTS airports (
-        column_1 INTEGER PRIMARY KEY,
-        column_2 TEXT,
-        column_3 TEXT,
-        column_4 TEXT,
-        column_5 TEXT,
-        column_6 TEXT,
-        column_7 FLOAT,
-        column_8 FLOAT,
-        column_9 FLOAT,
-        column_10 TEXT,
-        column_11 TEXT,
-        column_12 TEXT,
-        geo_punkt TEXT
-    )
-""")
+#changing column types
+columnTypes = {'column_1': INTEGER, 'column_2': String, 'column_3': String, 'column_4': String, 'column_5': String,
+               'column_6': String, 'column_7': Float,'column_8': Float, 'column_9': INTEGER, 'column_10': Float,
+               'column_11': TEXT,'column_12': String, 'geo_punkt': DECIMAL}
 
-# Write data to SQLite table
-next(csv_reader)  # skip header row
-for row in csv_reader:
-    cursor.execute("""
-        INSERT INTO airports (
-            column_1,
-            column_2,
-            column_3,
-            column_4,
-            column_5,
-            column_6,
-            column_7,
-            column_8,
-            column_9,
-            column_10,
-            column_11,
-            column_12,
-            geo_punkt
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, row)
-
-# Commit changes and close connection
-conn.commit()
-conn.close()
+#saving table to sqlite file
+datafield.to_sql('airports','sqlite:///airports.sqlite', if_exists='replace', index=False)
